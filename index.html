@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darcy Gloire Mbombolo — Cybersécurité & Réseaux</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --navy: #0B1F3A; --navy-mid: #122845;
+    --blue: #1A56A0; --blue-light: #2E74C8;
+    --accent-soft: #E6F0FB;
+    --white: #ffffff; --off-white: #F7F9FC;
+    --gray-100: #EEF1F6; --gray-200: #D8DEE9;
+    --gray-400: #8A94A6; --gray-600: #4A5568; --gray-800: #1A202C;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--sans); color: var(--gray-800); background: var(--white); line-height: 1.6; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--gray-200);
+    padding: 0 2rem; height: 60px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand { font-family: var(--mono); font-size: 15px; font-weight: 500; color: var(--navy); letter-spacing: -0.3px; }
+  .nav-brand span { color: var(--blue-light); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 13px; font-weight: 500; color: var(--gray-600); text-decoration: none; letter-spacing: 0.3px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--blue); }
+
+  section { padding: 5rem 0; }
+  .container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+
+  #hero {
+    min-height: 100vh; background: var(--navy);
+    display: flex; align-items: center; padding-top: 60px;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(26,86,160,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(26,86,160,0.15) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-content { position: relative; z-index: 2; max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 13px; color: var(--blue-light);
+    letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .hero-eyebrow::before { content: ''; display: inline-block; width: 32px; height: 1px; background: var(--blue-light); }
+  h1 { font-size: clamp(2.8rem, 5vw, 4.5rem); font-weight: 700; color: var(--white); line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 1.5rem; }
+  h1 em { font-style: normal; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,0.4); }
+  .hero-sub { font-size: 1.05rem; color: rgba(255,255,255,0.55); max-width: 580px; margin-bottom: 2.5rem; line-height: 1.7; }
+  .hero-ctas { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--blue); color: var(--white); padding: 12px 24px;
+    border-radius: 6px; font-size: 14px; font-weight: 600; text-decoration: none;
+    transition: background 0.2s, transform 0.15s;
+  }
+  .btn-primary:hover { background: var(--blue-light); transform: translateY(-1px); }
+  .btn-outline {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: transparent; color: rgba(255,255,255,0.75);
+    border: 1px solid rgba(255,255,255,0.2); padding: 12px 24px;
+    border-radius: 6px; font-size: 14px; font-weight: 500; text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); color: var(--white); }
+  .hero-badges { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 3.5rem; padding-top: 3rem; border-top: 1px solid rgba(255,255,255,0.08); }
+  .badge { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--blue-light); background: rgba(26,86,160,0.15); border: 1px solid rgba(26,86,160,0.3); padding: 5px 12px; border-radius: 4px; letter-spacing: 0.5px; }
+
+  .section-label { font-family: var(--mono); font-size: 11px; font-weight: 500; color: var(--blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 0.75rem; }
+  h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); font-weight: 700; color: var(--navy); letter-spacing: -0.8px; line-height: 1.15; margin-bottom: 1rem; }
+  .section-intro { font-size: 1.05rem; color: var(--gray-600); max-width: 600px; line-height: 1.75; }
+
+  #about { background: var(--off-white); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+  .about-text p { color: var(--gray-600); margin-bottom: 1rem; line-height: 1.75; }
+  .certs-block { margin-top: 2rem; }
+  .certs-block h4 { font-size: 12px; font-weight: 600; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
+  .cert-item { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 14px; color: var(--gray-700); }
+  .cert-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+  .langs-block { display: flex; gap: 12px; margin-top: 1.5rem; }
+  .lang-pill { font-size: 13px; font-weight: 500; color: var(--blue); background: var(--accent-soft); border: 1px solid #B5D4F4; padding: 5px 14px; border-radius: 20px; }
+
+  .skills-panel { background: var(--navy); border-radius: 12px; padding: 2rem; color: var(--white); }
+  .skills-panel h3 { font-family: var(--mono); font-size: 12px; color: var(--blue-light); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem; }
+  .skill-group { margin-bottom: 1.5rem; }
+  .skill-group-title { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.75rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-tag { font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.85); background: rgba(26,86,160,0.2); border: 1px solid rgba(26,86,160,0.35); padding: 4px 10px; border-radius: 4px; }
+
+  #competences { background: var(--white); }
+  .comp-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+  .comp-card { border: 1px solid var(--gray-200); border-radius: 10px; padding: 1.75rem; transition: border-color 0.2s, transform 0.2s; position: relative; overflow: hidden; }
+  .comp-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+  .comp-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--blue); opacity: 0; transition: opacity 0.2s; }
+  .comp-card:hover::before { opacity: 1; }
+  .comp-icon { width: 44px; height: 44px; background: var(--accent-soft); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.25rem; font-size: 20px; }
+  .comp-card h3 { font-size: 15px; font-weight: 600; color: var(--navy); margin-bottom: 0.75rem; }
+  .comp-card p { font-size: 14px; color: var(--gray-600); line-height: 1.65; }
+  .comp-tools { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 1rem; }
+  .tool-chip { font-family: var(--mono); font-size: 11px; color: var(--blue); background: var(--accent-soft); padding: 3px 8px; border-radius: 3px; }
+
+  #projets { background: var(--off-white); }
+  .projets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+  .projet-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: 10px; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; }
+  .projet-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(11,31,58,0.10); }
+  .projet-header { background: var(--navy); padding: 1.5rem; }
+  .projet-type { font-family: var(--mono); font-size: 10px; color: var(--blue-light); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .projet-header h3 { font-size: 16px; font-weight: 600; color: var(--white); }
+  .projet-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+  .projet-body p { font-size: 14px; color: var(--gray-600); line-height: 1.65; margin-bottom: 1.25rem; flex: 1; }
+  .projet-techs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .tech-pill { font-family: var(--mono); font-size: 11px; color: var(--gray-600); background: var(--gray-100); border: 1px solid var(--gray-200); padding: 3px 9px; border-radius: 4px; }
+  .projet-screen { background: #0d1117; border-radius: 8px; overflow: hidden; margin: 1rem 0 0.5rem; border: 1px solid #30363d; width: 100%; }
+  .screen-bar { background: #161b22; padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #30363d; }
+  .screen-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .screen-dot.r { background: #ff5f57; }
+  .screen-dot.y { background: #febc2e; }
+  .screen-dot.g { background: #28c840; }
+  .screen-title { font-family: var(--mono); font-size: 11px; color: #8b949e; margin-left: 6px; }
+  .screen-code { font-family: var(--mono); font-size: 12px; color: #c9d1d9; padding: 14px 16px; line-height: 1.7; overflow-x: auto; white-space: pre-wrap; word-break: break-all; margin: 0; display: block; width: 100%; }
+  .hl-red { color: #ff7b72; }
+  .hl-green { color: #3fb950; }
+  .hl-comment { color: #8b949e; }
+  .projet-body code { font-family: var(--mono); font-size: 12px; color: var(--blue); background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+  .projet-screen { background: #0d1117; border-radius: 8px; overflow: hidden; margin: 1rem 0 0.5rem; border: 1px solid #30363d; }
+  .screen-bar { background: #161b22; padding: 8px 12px; display: flex; align-items: center; gap: 6px; border-bottom: 1px solid #30363d; }
+  .screen-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  .screen-dot.r { background: #ff5f57; }
+  .screen-dot.y { background: #febc2e; }
+  .screen-dot.g { background: #28c840; }
+  .screen-title { font-family: var(--mono); font-size: 11px; color: #8b949e; margin-left: 6px; }
+  .screen-code { font-family: var(--mono); font-size: 12px; color: #c9d1d9; padding: 14px 16px; line-height: 1.7; overflow-x: auto; white-space: pre; margin: 0; }
+  .hl-red { color: #ff7b72; }
+  .hl-green { color: #3fb950; }
+  .hl-comment { color: #8b949e; }
+
+  #parcours { background: var(--white); }
+  .parcours-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; margin-top: 3rem; }
+  .parcours-col h3 { font-family: var(--mono); font-size: 11px; color: var(--blue); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--gray-200); }
+  .timeline { position: relative; }
+  .timeline::before { content: ''; position: absolute; left: 0; top: 8px; bottom: 0; width: 1px; background: var(--gray-200); }
+  .timeline-item { padding-left: 1.75rem; margin-bottom: 2rem; position: relative; }
+  .timeline-item::before { content: ''; position: absolute; left: -4px; top: 6px; width: 9px; height: 9px; border-radius: 50%; background: var(--blue); border: 2px solid var(--white); box-shadow: 0 0 0 1px var(--blue); }
+  .timeline-date { font-family: var(--mono); font-size: 11px; color: var(--blue); font-weight: 500; margin-bottom: 3px; }
+  .timeline-item h4 { font-size: 14px; font-weight: 600; color: var(--navy); margin-bottom: 2px; }
+  .timeline-org { font-size: 12px; color: var(--gray-400); margin-bottom: 6px; }
+  .timeline-item ul { padding-left: 1rem; margin-top: 6px; }
+  .timeline-item ul li { font-size: 13px; color: var(--gray-600); line-height: 1.6; margin-bottom: 3px; }
+
+  #contact { background: var(--navy); }
+  #contact .section-label { color: var(--blue-light); }
+  #contact h2 { color: var(--white); }
+  #contact .section-intro { color: rgba(255,255,255,0.55); }
+  .contact-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; margin-top: 3rem; }
+  .contact-card {
+    display: flex; align-items: center; gap: 14px;
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 10px; padding: 1.25rem 1.5rem;
+    text-decoration: none; transition: background 0.2s, border-color 0.2s;
+  }
+  .contact-card:not(.no-link):hover { background: rgba(26,86,160,0.2); border-color: rgba(26,86,160,0.5); }
+  .contact-card.no-link { cursor: default; }
+  .contact-icon { width: 40px; height: 40px; background: rgba(26,86,160,0.2); border: 1px solid rgba(26,86,160,0.35); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+  .contact-detail-label { font-size: 11px; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; margin-bottom: 2px; }
+  .contact-detail-value { font-size: 14px; color: rgba(255,255,255,0.85); }
+
+  footer { background: var(--navy); border-top: 1px solid rgba(255,255,255,0.07); padding: 1.5rem 2rem; text-align: center; font-family: var(--mono); font-size: 12px; color: rgba(255,255,255,0.25); }
+
+
+  .hamburger { display: none; }
+
+  @media (max-width: 900px) {
+    .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+    .parcours-cols { grid-template-columns: 1fr; gap: 2.5rem; }
+    .projets-grid { grid-template-columns: 1fr 1fr; }
+    .comp-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 640px) {
+    section { padding: 3rem 0; }
+    .container { padding: 0 1.1rem; }
+    nav { padding: 0 1.1rem; height: 56px; }
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex; flex-direction: column; gap: 0;
+      position: fixed; top: 56px; left: 0; right: 0; bottom: 0;
+      background: rgba(11,31,58,0.98);
+      align-items: center; justify-content: center;
+      z-index: 99;
+    }
+    .nav-links.open a { font-size: 18px; color: rgba(255,255,255,0.85); padding: 1rem 0; }
+    .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+    .hamburger span { display: block; width: 22px; height: 2px; background: var(--navy); border-radius: 2px; transition: all 0.2s; }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+    h1 { font-size: 2rem; letter-spacing: -0.8px; line-height: 1.12; }
+    h2 { font-size: 1.6rem; letter-spacing: -0.5px; }
+    .hero-content { padding: 0 1.1rem; }
+    .hero-eyebrow { font-size: 11px; letter-spacing: 1.5px; }
+    .hero-sub { font-size: 0.95rem; }
+    .hero-ctas { flex-direction: column; }
+    .btn-primary, .btn-outline { width: 100%; justify-content: center; text-align: center; }
+    .hero-badges { gap: 7px; margin-top: 2rem; padding-top: 2rem; flex-wrap: wrap; }
+    .badge { font-size: 10px; padding: 4px 9px; }
+    .about-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+    .skills-panel { padding: 1.25rem; }
+    .skill-tag { font-size: 11px; }
+    .comp-grid { grid-template-columns: 1fr; }
+    .comp-card { padding: 1.25rem; }
+    .projets-grid { grid-template-columns: 1fr; }
+    .projet-body { padding: 1.1rem; }
+    .projet-header { padding: 1.1rem; }
+    .screen-code { font-size: 10.5px; padding: 10px 11px; overflow-x: auto; white-space: pre; }
+    .screen-bar { padding: 7px 11px; }
+    .parcours-cols { grid-template-columns: 1fr; gap: 2rem; }
+    .timeline-item { padding-left: 1.4rem; }
+    .timeline-item ul li { font-size: 13px; }
+    .contact-cards { grid-template-columns: 1fr; gap: 0.75rem; }
+    .contact-card { padding: 1rem 1.1rem; }
+    .section-intro { font-size: 0.95rem; }
+    .section-label { font-size: 10px; }
+  }
+
+  @media (max-width: 380px) {
+    h1 { font-size: 1.75rem; }
+    .about-stats { grid-template-columns: 1fr 1fr; }
+    .stat-number { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>&gt;</span> DGM_SECURITY</div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about" onclick="closeMenu()">À propos</a></li>
+    <li><a href="#competences" onclick="closeMenu()">Compétences</a></li>
+    <li><a href="#projets" onclick="closeMenu()">Projets</a></li>
+    <li><a href="#parcours" onclick="closeMenu()">Parcours</a></li>
+    <li><a href="#contact" onclick="closeMenu()">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">En recherche de stage — Bruxelles, Belgique</div>
+    <h1>Darcy Gloire<br><em>Mbombolo</em></h1>
+    <p class="hero-sub">
+      Étudiant en Master 1 Cybersécurité à Bruxelles, avec 3 stages à l'international en administration réseau et systèmes. Passionné par la sécurité des infrastructures IT, l'audit de vulnérabilités et la protection des systèmes d'information.
+    </p>
+    <div class="hero-ctas">
+      <a href="#projets" class="btn-primary">Voir mes projets →</a>
+      <a href="#contact" class="btn-outline">Me contacter</a>
+    </div>
+    <div class="hero-badges">
+      <span class="badge">OSPF · EIGRP · TCP/IP</span>
+      <span class="badge">Kali Linux</span>
+      <span class="badge">Nessus · OpenVAS</span>
+      <span class="badge">Active Directory</span>
+      <span class="badge">Burp Suite</span>
+      <span class="badge">PKI · TLS · IPSec</span>
+      <span class="badge">Firewall · IDS/IPS</span>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-text">
+        <p class="section-label">// 01 — À propos</p>
+        <h2>Infrastructures réseau<br>& sécurité offensive</h2>
+        <p>
+          Étudiant en Master 1 Cybersécurité à l'École-IT de Bruxelles, j'ai acquis une expérience solide en administration réseau et systèmes au fil de trois stages en entreprise (Congo, Sénégal). Cette expérience terrain m'a permis de maîtriser des environnements réels — pas seulement des labs.
+        </p>
+        <p>
+          Mon objectif : intégrer un cabinet conseil cyber ou une équipe sécurité pour contribuer à des missions d'audit, d'analyse de vulnérabilités et de renforcement des infrastructures. Je suis rigoureux, curieux et orienté résolution de problèmes.
+        </p>
+        <div class="certs-block">
+          <h4>Certifications</h4>
+          <div class="cert-item"><span class="cert-dot"></span> CISCO IT Essentials</div>
+          <div class="cert-item"><span class="cert-dot"></span> CISCO Introduction à la Cybersécurité</div>
+          <div class="cert-item"><span class="cert-dot"></span> Google Ateliers Numériques</div>
+        </div>
+        <div class="langs-block">
+          <span class="lang-pill">🇫🇷 Français — Natif</span>
+          <span class="lang-pill">🇬🇧 Anglais — Intermédiaire</span>
+        </div>
+      </div>
+      <div class="skills-panel">
+        <h3>// Stack technique</h3>
+        <div class="skill-group">
+          <div class="skill-group-title">Réseaux</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Cisco (routeurs/switchs)</span>
+            <span class="skill-tag">OSPF</span>
+            <span class="skill-tag">EIGRP</span>
+            <span class="skill-tag">TCP/IP</span>
+            <span class="skill-tag">VLAN</span>
+            <span class="skill-tag">VPN</span>
+            <span class="skill-tag">Wi-Fi</span>
+            <span class="skill-tag">DNS · DHCP · SNMP</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Systèmes</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Linux (Ubuntu, Debian, Kali)</span>
+            <span class="skill-tag">Windows Server</span>
+            <span class="skill-tag">CentOS</span>
+            <span class="skill-tag">Active Directory</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Cybersécurité</div>
+          <div class="skill-tags">
+            <span class="skill-tag">Nessus</span>
+            <span class="skill-tag">OpenVAS</span>
+            <span class="skill-tag">Nmap</span>
+            <span class="skill-tag">Burp Suite</span>
+            <span class="skill-tag">PKI · TLS · IPSec · SSL</span>
+            <span class="skill-tag">Firewall</span>
+            <span class="skill-tag">IDS/IPS</span>
+          </div>
+        </div>
+        <div class="skill-group">
+          <div class="skill-group-title">Développement</div>
+          <div class="skill-tags">
+            <span class="skill-tag">HTML · CSS · PHP</span>
+            <span class="skill-tag">C</span>
+            <span class="skill-tag">Java</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="competences">
+  <div class="container">
+    <p class="section-label">// 02 — Compétences</p>
+    <h2>Ce que je maîtrise</h2>
+    <p class="section-intro">Des compétences construites sur 3 stages en entreprise et une formation spécialisée en cybersécurité et réseaux.</p>
+    <div class="comp-grid">
+
+      <div class="comp-card">
+        <div class="comp-icon">🌐</div>
+        <h3>Administration réseau</h3>
+        <p>Configuration et déploiement d'infrastructures Cisco : VLAN, VPN intersites, équilibrage de charge, routage OSPF/EIGRP et sécurisation des flux réseau.</p>
+        <div class="comp-tools">
+          <span class="tool-chip">Cisco IOS</span>
+          <span class="tool-chip">VLAN</span>
+          <span class="tool-chip">VPN IPSec</span>
+          <span class="tool-chip">OSPF</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-icon">🖥️</div>
+        <h3>Administration systèmes</h3>
+        <p>Gestion de serveurs Windows Server et Linux (CentOS, Ubuntu) : Active Directory, gestion des comptes et droits d'accès, supervision et incidents N1/N2.</p>
+        <div class="comp-tools">
+          <span class="tool-chip">Windows Server</span>
+          <span class="tool-chip">Active Directory</span>
+          <span class="tool-chip">CentOS</span>
+          <span class="tool-chip">Ubuntu</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-icon">🔍</div>
+        <h3>Audit & vulnérabilités</h3>
+        <p>Scan et analyse de vulnérabilités avec Nessus et OpenVAS, détection de failles, priorisation des risques et recommandations de remédiation.</p>
+        <div class="comp-tools">
+          <span class="tool-chip">Nessus</span>
+          <span class="tool-chip">OpenVAS</span>
+          <span class="tool-chip">Nmap</span>
+          <span class="tool-chip">Burp Suite</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-icon">🛡️</div>
+        <h3>Sécurité & cryptographie</h3>
+        <p>Mise en place de PKI, configuration TLS/SSL/IPSec, déploiement et administration de firewalls et systèmes de détection d'intrusion (IDS/IPS).</p>
+        <div class="comp-tools">
+          <span class="tool-chip">PKI</span>
+          <span class="tool-chip">TLS / SSL</span>
+          <span class="tool-chip">IPSec</span>
+          <span class="tool-chip">IDS/IPS</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-icon">📡</div>
+        <h3>Supervision & monitoring</h3>
+        <p>Surveillance des performances réseau et système via SNMP, traitement des incidents, procédures de sauvegarde et restauration de données.</p>
+        <div class="comp-tools">
+          <span class="tool-chip">SNMP</span>
+          <span class="tool-chip">Nagios</span>
+          <span class="tool-chip">Wireshark</span>
+        </div>
+      </div>
+
+      <div class="comp-card">
+        <div class="comp-icon">⚙️</div>
+        <h3>Scripting & développement</h3>
+        <p>Automatisation de tâches d'administration, développement d'outils internes et scripting pour la gestion de parcs informatiques.</p>
+        <div class="comp-tools">
+          <span class="tool-chip">Bash</span>
+          <span class="tool-chip">Python</span>
+          <span class="tool-chip">PHP</span>
+          <span class="tool-chip">Java</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="projets">
+  <div class="container">
+    <p class="section-label">// 03 — Projets</p>
+    <h2>Travaux & réalisations</h2>
+    <p class="section-intro">Projets académiques et labs personnels illustrant mes compétences en infrastructure réseau et sécurité.</p>
+    <div class="projets-grid">
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Stage • ST Digital — Congo · 2023</div>
+          <h3>Segmentation VLAN & VPN intersites</h3>
+        </div>
+        <div class="projet-body">
+          <p>Déploiement d'une segmentation réseau par VLAN pour isoler les flux par service, configuration de VPN intersites pour sécuriser les communications entre agences, et mise en place d'un équilibrage de charge sur les équipements de sortie.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">Cisco</span>
+            <span class="tech-pill">VLAN</span>
+            <span class="tech-pill">VPN IPSec</span>
+            <span class="tech-pill">Load Balancing</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Stage • Tigo — Dakar · 2021</div>
+          <h3>Administration serveurs & Active Directory</h3>
+        </div>
+        <div class="projet-body">
+          <p>Administration et supervision de serveurs Windows Server et Linux (CentOS, Ubuntu) dans un environnement opérateur télécom. Gestion des comptes via Active Directory, surveillance des performances et mise en place de procédures de sauvegarde.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">Windows Server</span>
+            <span class="tech-pill">Active Directory</span>
+            <span class="tech-pill">CentOS</span>
+            <span class="tech-pill">Ubuntu</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Lab académique • École-IT</div>
+          <h3>Audit de vulnérabilités — Lab interne</h3>
+        </div>
+        <div class="projet-body">
+          <p>Simulation d'un audit de sécurité complet : scan de vulnérabilités avec Nessus et OpenVAS, analyse des résultats, priorisation par criticité et rédaction d'un rapport de remédiation avec plan d'action.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">Nessus</span>
+            <span class="tech-pill">OpenVAS</span>
+            <span class="tech-pill">Nmap</span>
+            <span class="tech-pill">Kali Linux</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Lab académique • École-IT</div>
+          <h3>Infrastructure réseau multi-protocoles</h3>
+        </div>
+        <div class="projet-body">
+          <p>Conception et configuration d'un réseau d'entreprise complet : routage dynamique OSPF et EIGRP, segmentation VLAN, DNS/DHCP intégrés et sécurisation par ACL et firewall périmétrique.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">OSPF</span>
+            <span class="tech-pill">EIGRP</span>
+            <span class="tech-pill">VLAN</span>
+            <span class="tech-pill">ACL</span>
+            <span class="tech-pill">DNS/DHCP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Lab personnel • Cybersécurité</div>
+          <h3>PKI & chiffrement des communications</h3>
+        </div>
+        <div class="projet-body">
+          <p>Mise en place d'une infrastructure à clés publiques (PKI) pour sécuriser les échanges : déploiement d'une autorité de certification, émission de certificats TLS/SSL et configuration IPSec pour le chiffrement des tunnels.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">PKI</span>
+            <span class="tech-pill">TLS / SSL</span>
+            <span class="tech-pill">IPSec</span>
+            <span class="tech-pill">OpenSSL</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Audit Pentest • Vulhub / Kali Linux — Avr. 2026</div>
+          <h3>Audit de sécurité — SecureBank (PCI-DSS)</h3>
+        </div>
+        <div class="projet-body">
+          <p>Audit boîte grise complet sur une infrastructure fintech fictive en environnement lab isolé (Vulhub + Docker). Identification et exploitation de 4 vulnérabilités CRITIQUE : SSRF via GeoServer (CVE-2024-36401, CVSS 9.8), XXE Injection PHP permettant la lecture de <code>/etc/passwd</code> et <code>/etc/shadow</code> (CVSS 9.1), et contournement d'authentification Next.js (CVE-2025-29927, CVSS 9.1). Rédaction d'un rapport d'audit complet avec roadmap de remédiation alignée PCI-DSS.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">Kali Linux</span>
+            <span class="tech-pill">Vulhub / Docker</span>
+            <span class="tech-pill">SSRF</span>
+            <span class="tech-pill">XXE Injection</span>
+            <span class="tech-pill">Auth Bypass</span>
+            <span class="tech-pill">CVE-2024-36401</span>
+            <span class="tech-pill">CVE-2025-29927</span>
+            <span class="tech-pill">PCI-DSS</span>
+            <span class="tech-pill">curl / Netcat</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Reconnaissance Active • Nmap / Kali Linux — Fév. 2026</div>
+          <h3>Pentest Metasploitable2 — Reconnaissance complète</h3>
+        </div>
+        <div class="projet-body">
+          <p>Reconnaissance active complète sur Metasploitable2 en environnement VirtualBox isolé. Maîtrise des techniques de scanning Nmap (SYN, agressif, UDP, NSE, decoy scan) et énumération manuelle des services. Résultats : 23 ports TCP ouverts, 15 vulnérabilités dont 5 permettant un accès root immédiat sans authentification (bindshell port 1524, backdoor vsftpd CVE-2011-2523, MySQL root sans mot de passe…). Comparaisons techniques -sS vs -sT et T1 vs T4 (facteur ×603). Rapport complet livré avec tableau de synthèse et roadmap de remédiation.</p>
+          <div class="projet-screen">
+            <div class="screen-bar"><span class="screen-dot r"></span><span class="screen-dot y"></span><span class="screen-dot g"></span><span class="screen-title">kali@kali — nmap scan</span></div>
+            <pre class="screen-code">$ nmap -sS -T4 192.168.56.103
+Starting Nmap 7.98
+PORT     STATE SERVICE
+21/tcp   open  ftp        <span class="hl-red"># vsftpd 2.3.4 — backdoor CVE-2011-2523</span>
+22/tcp   open  ssh
+23/tcp   open  telnet     <span class="hl-red"># credentials en clair</span>
+80/tcp   open  http       <span class="hl-red"># Apache 2.2.8 + DVWA + Mutillidae</span>
+445/tcp  open  microsoft-ds <span class="hl-red"># Samba CVE-2007-2447 RCE</span>
+1524/tcp open  ingreslock <span class="hl-red"># SHELL ROOT DIRECT</span>
+3306/tcp open  mysql      <span class="hl-red"># root sans mot de passe</span>
+6667/tcp open  irc        <span class="hl-red"># UnrealIRCd — version backdoorée</span>
+8180/tcp open  http       <span class="hl-red"># Apache Tomcat 5.5</span>
+<span class="hl-green">23 ports ouverts — Niveau de risque : CRITIQUE</span></pre>
+          </div>
+          <div class="projet-screen">
+            <div class="screen-bar"><span class="screen-dot r"></span><span class="screen-dot y"></span><span class="screen-dot g"></span><span class="screen-title">kali@kali — backdoor root 1524</span></div>
+            <pre class="screen-code">$ nc 192.168.56.103 1524
+<span class="hl-green">root@metasploitable:/#</span> <span class="hl-comment"># shell root sans auth</span>
+root@metasploitable:/# id
+uid=0(root) gid=0(root) groups=0(root)
+<span class="hl-green"># Accès root immédiat — P0 CRITIQUE</span></pre>
+          </div>
+          <div class="projet-techs" style="margin-top:1rem;">
+            <span class="tech-pill">Nmap 7.98</span>
+            <span class="tech-pill">Kali Linux</span>
+            <span class="tech-pill">Netcat</span>
+            <span class="tech-pill">smbclient</span>
+            <span class="tech-pill">NSE Scripts</span>
+            <span class="tech-pill">CVE-2011-2523</span>
+            <span class="tech-pill">CVE-2007-2447</span>
+            <span class="tech-pill">Decoy Scan</span>
+            <span class="tech-pill">VirtualBox</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="projet-card">
+        <div class="projet-header">
+          <div class="projet-type">Lab personnel • Pentest</div>
+          <h3>Tests d'intrusion Web — Burp Suite</h3>
+        </div>
+        <div class="projet-body">
+          <p>Analyse de vulnérabilités web sur des environnements de lab : identification de failles OWASP (injection SQL, XSS, IDOR), exploitation contrôlée et documentation des vecteurs d'attaque.</p>
+          <div class="projet-techs">
+            <span class="tech-pill">Burp Suite</span>
+            <span class="tech-pill">OWASP Top 10</span>
+            <span class="tech-pill">Kali Linux</span>
+            <span class="tech-pill">SQLmap</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="parcours">
+  <div class="container">
+    <p class="section-label">// 04 — Parcours</p>
+    <h2>Formation & expériences</h2>
+    <p class="section-intro">Un parcours international qui allie formation solide et expériences terrain en Belgique, au Congo et au Sénégal.</p>
+    <div class="parcours-cols">
+
+      <div class="parcours-col">
+        <h3>// Formations</h3>
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-date">2025 — 2026</div>
+            <h4>Master 1 — Cybersécurité</h4>
+            <div class="timeline-org">École-IT · Bruxelles, Belgique</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">2024 — 2025</div>
+            <h4>Licence — Systèmes d'Information</h4>
+            <div class="timeline-org">École-IT · Bruxelles, Belgique</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">2020 — 2023</div>
+            <h4>Licence — Réseaux Informatiques</h4>
+            <div class="timeline-org">ISI · Dakar, Sénégal</div>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">2017 — 2020</div>
+            <h4>Licence Pro — Électrotechnique</h4>
+            <div class="timeline-org">ESEBAT · Dakar, Sénégal</div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="parcours-col">
+        <h3>// Expériences</h3>
+        <div class="timeline">
+
+          <div class="timeline-item">
+            <div class="timeline-date">Juin — Sep 2023</div>
+            <h4>Stagiaire Technicien Réseau</h4>
+            <div class="timeline-org">ST Digital · Kinshasa, Congo</div>
+            <ul>
+              <li>Déploiement et segmentation de VLAN par service</li>
+              <li>Configuration de VPN intersites (agences)</li>
+              <li>Équilibrage de charge sur équipements de sortie</li>
+              <li>Configuration d'équipements Cisco (routeurs, switchs)</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Juil — Sep 2022</div>
+            <h4>Informaticien Stagiaire</h4>
+            <div class="timeline-org">Expresso · Dakar, Sénégal</div>
+            <ul>
+              <li>Maintenance préventive et curative des postes</li>
+              <li>Inventaire et contrôle du parc informatique</li>
+              <li>Démonstrations techniques du logiciel interne</li>
+            </ul>
+          </div>
+
+          <div class="timeline-item">
+            <div class="timeline-date">Juin — Sep 2021</div>
+            <h4>Administrateur Systèmes Stagiaire</h4>
+            <div class="timeline-org">Tigo · Dakar, Sénégal</div>
+            <ul>
+              <li>Administration serveurs Windows Server & Linux</li>
+              <li>Gestion des comptes via Active Directory</li>
+              <li>Surveillance système et incidents N1/N2</li>
+              <li>Procédures de sauvegarde et restauration</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="container">
+    <p class="section-label">// 05 — Contact</p>
+    <p class="section-intro">Je suis disponible pour un stage à Bruxelles. N'hésite pas à me contacter pour discuter d'une collaboration.</p>
+    <div class="contact-cards">
+      <a href="mailto:Gloiredarcy8@gmail.com" class="contact-card">
+        <div class="contact-icon">✉️</div>
+        <div>
+          <div class="contact-detail-label">Email</div>
+          <div class="contact-detail-value">Gloiredarcy8@gmail.com</div>
+        </div>
+      </a>
+      <a href="tel:+32494224950" class="contact-card">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-detail-label">Téléphone</div>
+          <div class="contact-detail-value">+32 494 22 49 50</div>
+        </div>
+      </a>
+      <div class="contact-card no-link">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-detail-label">Localisation</div>
+          <div class="contact-detail-value">Zaventem, Bruxelles — Belgique</div>
+        </div>
+      </div>
+      <div class="contact-card no-link">
+        <div class="contact-icon">📄</div>
+        <div>
+          <div class="contact-detail-label">Disponibilité</div>
+          <div class="contact-detail-value">Stage — dès que possible · Bruxelles</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 · Darcy Gloire Mbombolo</p>
+</footer>
+
+<script>
+  function toggleMenu() {
+    const nav = document.getElementById('navLinks');
+    const btn = document.getElementById('hamburger');
+    nav.classList.toggle('open');
+    btn.classList.toggle('open');
+    document.body.style.overflow = nav.classList.contains('open') ? 'hidden' : '';
+  }
+  function closeMenu() {
+    const nav = document.getElementById('navLinks');
+    const btn = document.getElementById('hamburger');
+    nav.classList.remove('open');
+    btn.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+</script>
+</body>
+</html>
